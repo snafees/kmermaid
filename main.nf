@@ -15,27 +15,27 @@ def helpMessage() {
 
     With a samples.csv file containing the columns sample_id,read1,read2:
 
-      nextflow run czbiohub/nf-kmer-similarity \
+      nextflow run czbiohub/nf-kmer-similarity \\
         --outdir s3://olgabot-maca/nf-kmer-similarity/ --samples samples.csv
 
 
     With read pairs in one or more semicolon-separated s3 directories:
 
-      nextflow run czbiohub/nf-kmer-similarity \
-        --outdir s3://olgabot-maca/nf-kmer-similarity/ \
+      nextflow run czbiohub/nf-kmer-similarity \\
+        --outdir s3://olgabot-maca/nf-kmer-similarity/ \\
         --directories s3://olgabot-maca/sra/homo_sapiens/smartseq2_quartzseq/*{R1,R2}*.fastq.gz;s3://olgabot-maca/sra/danio_rerio/smart-seq/whole_kidney_marrow_prjna393431/*{R1,R2}*.fastq.gz
 
 
     With plain ole fastas in one or more semicolon-separated s3 directories:
 
-      nextflow run czbiohub/nf-kmer-similarity \
-        --outdir s3://olgabot-maca/nf-kmer-similarity/choanoflagellates_richter2018/ \
+      nextflow run czbiohub/nf-kmer-similarity \\
+        --outdir s3://olgabot-maca/nf-kmer-similarity/choanoflagellates_richter2018/ \\
         --fastas /home/olga/data/figshare/choanoflagellates_richter2018/1_choanoflagellate_transcriptomes/*.fasta
 
 
     With SRA ids (requires nextflow v19.03-edge or greater):
 
-      nextflow run czbiohub/nf-kmer-similarity \
+      nextflow run czbiohub/nf-kmer-similarity \\
         --outdir s3://olgabot-maca/nf-kmer-similarity/ --sra SRP016501
 
 
@@ -68,6 +68,7 @@ def helpMessage() {
 }
 
 
+params.help = params.help ? params.help : false
 
 // Show help emssage
 if (params.help){
@@ -78,6 +79,11 @@ if (params.help){
 /*
  * SET UP CONFIGURATION VARIABLES
  */
+ params.sra = params.sra ? params.sra : false
+ params.samples = params.samples ? params.samples : false
+ params.read_pairs = params.read_pairs ? params.read_pairs : false
+ params.fastas = params.fastas ? params.fastas : false
+ params.outdir = params.outdir ? params.outdir : "./"
 
  // Samples from SRA
  sra_ch = Channel.empty()
