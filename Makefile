@@ -23,38 +23,14 @@ run_ndnd_local:
 		-process.executor='local'
 
 
-test_sra:
-		nextflow run main.nf --sra "SRP016501" -profile local \
-			--ksizes 11 \
-			--log2_sketch_sizes 2 \
-			--molecules dna
+test_dna:
+	nextflow run main.nf -profile test_dna,docker
+
+test_protein:
+	nextflow run main.nf -profile test_protein,docker
 
 
-test_samplescsv:
-		nextflow run main.nf --ksizes 3,9 --log2_sketch_sizes 2,3 \
-			--outdir testing-output/samplescsv/ \
-			--molecules dna,protein \
-			--samples testing/samples.csv \
-			-profile local
-
-test_read_pairs:
-		nextflow run main.nf \
-			--ksizes 3,9 \
-			--log2_sketch_sizes 2,4 \
-			--molecules dna,protein \
-			--read_pairs testing/fastqs/*{1,2}.fastq.gz \
-			-profile local
-
-test_fastas:
-		nextflow run main.nf \
-			--ksizes 3,9 \
-			--log2_sketch_sizes 2,4 \
-			--molecules dna,protein \
-			--fastas testing/fastas/*.fasta \
-			-profile local
-
-
-test: test_sra test_samplescsv test_read_pairs test_fastas
+test: test_dna,test_protein
 
 
 
