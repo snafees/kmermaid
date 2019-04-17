@@ -1,6 +1,6 @@
-# nf-core/test: Reference Genomes Configuration
+# czbiohub/nf-kmer-similarity: Reference Genomes Configuration
 
-The nf-core/test pipeline needs a reference genome for alignment and annotation.
+The czbiohub/nf-kmer-similarity pipeline needs a reference genome for alignment and annotation.
 
 These paths can be supplied on the command line at run time (see the [usage docs](../usage.md)),
 but for convenience it's often better to save these paths in a nextflow config file.
