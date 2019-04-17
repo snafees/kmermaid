@@ -63,7 +63,8 @@ test_travis: test_protein test_dna
 
 test_local: test_sra test_samplescsv test_read_pairs test_fastas
 
-
+lint:
+	nf-core lint ${TRAVIS_BUILD_DIR}
 
 docker: docker_build docker_push
 
