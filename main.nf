@@ -62,6 +62,8 @@ def helpMessage() {
                                     Useful for comparing e.g. assembled transcriptomes or metagenomes.
                                     (Not typically used for raw sequencing data as this would create
                                     a k-mer signature for each read!)
+      --trim_low_abund              If set, then remove low abundance k-mers with the khmer script, trim-low-abund.py:
+                                      trim-low-abund.py -C 3 -Z 18 -V -M 2e9 ${reads}
     """.stripIndent()
 }
 
@@ -153,23 +155,25 @@ process sourmash_compute_sketch {
   sketch_id = "molecule-${molecule}_ksize-${ksize}_log2sketchsize-${log2_sketch_size}"
   molecule = molecule
   ksize = ksize
+  sourmash = if params.trim_low_abund ? "trim-low-abund.py -C 3 -Z 18 -V -M 2e9 $reads | sourmash" : "sourmash"
+  maybe_reads = if params.trim_low_abund ? "-" : "$reads"
   if ( params.one_signature_per_record ){
     """
-    sourmash compute \
+    $sourmash compute \
       --num-hashes \$((2**$log2_sketch_size)) \
       --ksizes $ksize \
       --$molecule \
       --output ${sample_id}_${sketch_id}.sig \
-      $read1 $read2
+      $maybe_reads
     """
   } else {
     """
-    sourmash compute \
+    $sourmash compute \
       --num-hashes \$((2**$log2_sketch_size)) \
       --ksizes $ksize \
       --$molecule \
       --output ${sample_id}_${sketch_id}.sig \
-      --merge '$sample_id' $reads
+      --merge '$sample_id' $maybe_reads
     """
   }
 
