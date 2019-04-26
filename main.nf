@@ -62,6 +62,9 @@ def helpMessage() {
                                     Useful for comparing e.g. assembled transcriptomes or metagenomes.
                                     (Not typically used for raw sequencing data as this would create
                                     a k-mer signature for each read!)
+      --index                       Create a sequence bloom tree database of all samples' k-mer signatures
+      --no-compare                  Don't compare all samples and output a csv
+
     """.stripIndent()
 }
 
@@ -175,31 +178,60 @@ process sourmash_compute_sketch {
 
 }
 
-// sourmash_sketches.println()
-// sourmash_sketches.groupTuple(by: [0,3]).println()
+if (!params.no_compare){
+  process sourmash_compare_sketches {
+  	tag "${sketch_id}"
 
-process sourmash_compare_sketches {
-	tag "${sketch_id}"
+  	container 'czbiohub/nf-kmer-similarity'
+  	publishDir "${params.outdir}/", mode: 'copy'
+  	errorStrategy 'retry'
+    maxRetries 3
 
-	container 'czbiohub/nf-kmer-similarity'
-	publishDir "${params.outdir}/", mode: 'copy'
-	errorStrategy 'retry'
-  maxRetries 3
+  	input:
+    set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file ("sketches/*.sig") \
+      from sourmash_sketches.groupTuple(by: [0, 3])
 
-	input:
-  set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file ("sketches/*.sig") \
-    from sourmash_sketches.groupTuple(by: [0, 3])
+  	output:
+  	file "similarities_${sketch_id}.csv"
 
-	output:
-	file "similarities_${sketch_id}.csv"
+  	script:
+  	"""
+  	sourmash compare \
+          --ksize ${ksize[0]} \
+          --${molecule[0]} \
+          --csv similarities_${sketch_id}.csv \
+          --traverse-directory .
+  	"""
 
-	script:
-	"""
-	sourmash compare \
-        --ksize ${ksize[0]} \
-        --${molecule[0]} \
-        --csv similarities_${sketch_id}.csv \
-        --traverse-directory .
-	"""
+  }
+}
 
+
+if (params.index) {
+  process sourmash_index_sketches {
+  	tag "${sketch_id}"
+
+  	container 'czbiohub/nf-kmer-similarity'
+  	publishDir "${params.outdir}/indexes", mode: 'copy'
+  	errorStrategy 'retry'
+    maxRetries 3
+
+  	input:
+    set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file ("sketches/*.sig") \
+      from sourmash_sketches.groupTuple(by: [0, 3])
+
+  	output:
+  	file "${index_name}.sbt.json"
+    file ".sbt.${index_name}"
+
+  	script:
+  	"""
+  	sourmash index \
+          --ksize ${ksize[0]} \
+          --${molecule[0]} \
+          --csv similarities_${sketch_id}.csv \
+          --traverse-directory $index_name .
+  	"""
+
+  }
 }
