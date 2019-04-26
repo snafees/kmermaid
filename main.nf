@@ -150,7 +150,7 @@ process sourmash_compute_sketch {
 	set sample_id, file(reads) from reads_ch
 
 	output:
-  set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file("${sample_id}_${sketch_id}.sig") into sourmash_sketches
+  set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file("${sample_id}_${sketch_id}.sig") into sketches_compare, sketches_index
 
 	script:
   sketch_id = "molecule-${molecule}_ksize-${ksize}_log2sketchsize-${log2_sketch_size}"
@@ -189,7 +189,7 @@ if (!params.no_compare){
 
   	input:
     set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file ("sketches/*.sig") \
-      from sourmash_sketches.groupTuple(by: [0, 3])
+      from sketches_compare.groupTuple(by: [0, 3])
 
   	output:
   	file "similarities_${sketch_id}.csv"
@@ -218,7 +218,7 @@ if (params.index) {
 
   	input:
     set val(sketch_id), val(molecule), val(ksize), val(log2_sketch_size), file ("sketches/*.sig") \
-      from sourmash_sketches.groupTuple(by: [0, 3])
+      from sketches_index.groupTuple(by: [0, 3])
 
   	output:
   	file "${index_name}.sbt.json"
