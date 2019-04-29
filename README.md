@@ -15,6 +15,9 @@ Defaults:
 
 ### With a samples.csv file:
 
+Given a comma-separated variable file with columns `sample_id,read1,read2`,
+one can run the workflow with these
+
 ```
 nextflow run czbiohub/nf-kmer-similarity \
   --outdir s3://olgabot-maca/nf-kmer-similarity/ \
@@ -51,10 +54,21 @@ nextflow run czbiohub/nf-kmer-similarity \
 
 ### Create an index
 
-If you'd like to create a sequence bloom tree database rather than comparing all sketches,
+If you'd like to create a sequence bloom tree database index in addition to comparing all sketches, use the parameter `--create_sbt_index`:
 
 
 ```
 nextflow run czbiohub/nf-kmer-similarity -latest -profile aws \
-		--read_pairs 's3://czb-maca/Plate_seq/3_month/**{R1,R2}*.fastq.gz'
+		--read_pairs 's3://czb-maca/Plate_seq/3_month/**{R1,R2}*.fastq.gz' \
+    --create_sbt_index
+```
+
+#### Create an index and don't compare all samples_ch
+
+To create a sequence bloom tree index instead of comparing all sketches, use both flags `--create_sbt_index` and `--no-compare`, e.g.:
+
+```
+nextflow run czbiohub/nf-kmer-similarity -latest -profile aws \
+		--read_pairs 's3://czb-maca/Plate_seq/3_month/**{R1,R2}*.fastq.gz' \
+    --create_sbt_index --no-compare
 ```
