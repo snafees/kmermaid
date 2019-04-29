@@ -62,7 +62,7 @@ def helpMessage() {
                                     Useful for comparing e.g. assembled transcriptomes or metagenomes.
                                     (Not typically used for raw sequencing data as this would create
                                     a k-mer signature for each read!)
-      --index                       Create a sequence bloom tree database of all samples' k-mer signatures
+      --create_sbt_index            Create a sequence bloom tree database of all samples' k-mer signatures
       --no-compare                  Don't compare all samples and output a csv
 
     """.stripIndent()
@@ -207,7 +207,7 @@ if (!params.no_compare){
 }
 
 
-if (params.index) {
+if (params.create_sbt_index) {
   process sourmash_index_sketches {
   	tag "${sketch_id}"
 
