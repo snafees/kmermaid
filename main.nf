@@ -221,8 +221,8 @@ if (params.create_sbt_index) {
       from sketches_index.groupTuple(by: [0, 3])
 
   	output:
-  	file "${index_name}.sbt.json"
-    file ".sbt.${index_name}"
+  	file "${sketch_id}.sbt.json"
+    file ".sbt.${sketch_id}"
 
   	script:
   	"""
@@ -230,7 +230,7 @@ if (params.create_sbt_index) {
           --ksize ${ksize[0]} \
           --${molecule[0]} \
           --csv similarities_${sketch_id}.csv \
-          --traverse-directory $index_name .
+          --traverse-directory $sketch_id .
   	"""
 
   }
