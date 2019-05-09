@@ -229,7 +229,6 @@ if (params.create_sbt_index) {
   	sourmash index \
           --ksize ${ksize[0]} \
           --${molecule[0]} \
-          --csv similarities_${sketch_id}.csv \
           --traverse-directory $sketch_id .
   	"""
 
