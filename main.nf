@@ -76,6 +76,15 @@ if (params.help){
     exit 0
 }
 
+// Has the run name been specified by the user?
+//  this has the bonus effect of catching both -name and --name
+custom_runName = params.name
+if( !(workflow.runName ==~ /[a-z]+_[a-z]+/) ){
+  custom_runName = workflow.runName
+}
+
+
+
 /*
  * SET UP CONFIGURATION VARIABLES
  */
@@ -134,7 +143,7 @@ log2_sketch_sizes = params.log2_sketch_sizes?.toString().tokenize(',')
 
 
 process sourmash_compute_sketch {
-	tag "${sample_id}_${sketch_id}"
+	tag "${custom_runName}_${sample_id}_${sketch_id}"
 	publishDir "${params.outdir}/sketches", mode: 'copy'
 	container 'czbiohub/nf-kmer-similarity'
 
@@ -180,7 +189,7 @@ process sourmash_compute_sketch {
 
 if (!params.no_compare){
   process sourmash_compare_sketches {
-  	tag "${sketch_id}"
+  	tag "${custom_runName}_${sketch_id}"
 
   	container 'czbiohub/nf-kmer-similarity'
   	publishDir "${params.outdir}/", mode: 'copy'
@@ -209,7 +218,7 @@ if (!params.no_compare){
 
 if (params.create_sbt_index) {
   process sourmash_index_sketches {
-  	tag "${sketch_id}"
+  	tag "${custom_runName}_${sketch_id}"
 
   	container 'czbiohub/nf-kmer-similarity'
   	publishDir "${params.outdir}/indexes", mode: 'copy'
