@@ -45,8 +45,9 @@ def helpMessage() {
     Sample Arguments -- One or more of:
       --samples                     CSV file with columns id, read1, read2 for each sample
       --fastas
-      --read_pairs                 Local or s3 directories containing *R{1,2}*.fastq.gz
-                                    files, separated by commas
+      --read_pairs                  Local or s3 directories containing *R{1,2}*.fastq.gz
+                                    files, separated by semicolons
+      --reads_single_end            Local or S3 directories containing single-end reads, separated by semicolons
       --sra                         SRR, ERR, SRP IDs representing a project. Only compatible with
                                     Nextflow 19.03-edge or greater
 
@@ -103,14 +104,19 @@ if (params.help){
    read_pairs_ch = Channel
      .fromFilePairs(params.read_pairs?.toString()?.tokenize(';'))
  }
- // Provided vanilla fastas
+ // Provided single-end fastq gz reads
+ if (params.reads_single_end){
+   read_single_end_ch = Channel
+     .fromFilePairs(params.reads_single_end?.toString()?.tokenize(';'), size: 1)
+ }
+// Provided vanilla fastas
  if (params.fastas){
    fastas_ch = Channel
      .fromPath(params.fastas?.toString()?.tokenize(';'))
      .map{ f -> tuple(f.baseName, tuple(file(f))) }
  }
 
- sra_ch.concat(samples_ch, read_pairs_ch, fastas_ch)
+ sra_ch.concat(samples_ch, read_pairs_ch, read_single_end_ch, fastas_ch)
   .set{ reads_ch }
 
 // AWSBatch sanity checking
