@@ -45,6 +45,14 @@ test_read_pairs:
 			--read_pairs testing/fastqs/*{1,2}.fastq.gz \
 			-profile local
 
+test_read_single_end:
+		nextflow run main.nf \
+			--ksizes 3,9 \
+			--log2_sketch_sizes 2,4 \
+			--molecules dna,protein \
+			--reads_single_end 'testing/fastqs/*.fastq.gz' \
+			-profile local
+
 test_fastas:
 		nextflow run main.nf \
 			--ksizes 3,9 \
