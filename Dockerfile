@@ -26,7 +26,7 @@ RUN apt-get update && \
 
 RUN which -a pip
 RUN which -a python
-ENV SOURMASH_VERSION 'olgabot/dayhoff'
+ENV SOURMASH_VERSION 'olgabot/paranathi-parallelize-dayhoff'
 RUN cd /home && \
     git clone --branch $SOURMASH_VERSION https://github.com/czbiohub/sourmash.git && \
     cd sourmash && \
