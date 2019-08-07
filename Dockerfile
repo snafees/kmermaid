@@ -23,7 +23,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ${PACKAGES} && \
     apt-get clean
 
-
+RUN which -a python
 ENV SOURMASH_VERSION 'olgabot/paranathi-parallelize-dayhoff'
 RUN cd /home && \
     git clone --branch $SOURMASH_VERSION https://github.com/czbiohub/sourmash.git && \

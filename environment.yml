@@ -16,6 +16,7 @@ dependencies:
   - sphinx
   - matplotlib
   - alabaster
-  - conda-forge::gxx_linux-64
+  - python=3.6.4
+#  - conda-forge::gxx_linux-64
   # - conda-forge::gcc_linux-64
   # - gcc
