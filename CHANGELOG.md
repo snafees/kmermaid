@@ -4,7 +4,7 @@
 
 * Add option to use Dayhoff encoding for sourmash
 * Add `ska` and `seqtk` to container dependencies
-* Add `track_abundance` feature to to keep track of hashed kmer frequency.
+* Add `track_abundance` feature to keep track of hashed kmer frequency.
 
 ## v0.1.0 - 6 March 2019
 
